@@ -1,0 +1,23 @@
+# dbt
+target/
+dbt_packages/
+logs/
+.user.yml
+edr_target/
+
+# Data
+downloads_h1_raw/
+*.dump
+*.csv
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+profiles.yml

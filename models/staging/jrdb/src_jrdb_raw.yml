@@ -1,0 +1,28 @@
+version: 2
+
+sources:
+  - name: jrdb_raw
+    database: pckeiba
+    schema: public
+    tables:
+      - name: sed
+        identifier: sed_parsed
+      - name: kyi
+        identifier: kyi_parsed_v51
+      - name: kka
+        identifier: kka_parsed
+      - name: bac
+        identifier: bac_parsed
+      - name: tyb
+        identifier: tyb_parsed
+      - name: srb
+        identifier: srb_parsed
+      - name: hjc
+      - name: kta
+      - name: ukc
+      - name: sra
+      - name: skb
+      - name: sec
+      - name: kyg
+      - name: kza
+      - name: cza

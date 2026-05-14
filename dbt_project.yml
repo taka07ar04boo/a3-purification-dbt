@@ -1,0 +1,27 @@
+name: 'a3_purification'
+version: '1.0.0'
+config-version: 2
+
+profile: 'a3_profile'
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+analysis-paths: ["analyses"]
+macro-paths: ["macros"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  a3_purification:
+    +pre-hook: "SET a3.allow_ddl = 'on';"
+    +materialized: view
+    l5_consilience:
+      +materialized: table
+    mart:
+      +materialized: table
+  elementary:
+    +pre-hook: "SET a3.allow_ddl = 'on';"

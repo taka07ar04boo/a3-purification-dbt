@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: int_zscore_features
+    description: "Z-scores and race-level stats for core JRDB indices (IDM, TEN, AGARI)"
+    columns:
+      - name: race_key
+        tests:
+          - not_null
+      - name: umaban
+        tests:
+          - not_null
+      - name: feat_idm_zscore
+        tests:
+          - not_null
+      - name: feat_ten_zscore
+        tests:
+          - not_null
+      - name: feat_agari_zscore
+        tests:
+          - not_null
+
+  - name: int_cushion_features
+    description: "Cushion value features with robust coalesce defaults"
+    columns:
+      - name: race_key
+        tests:
+          - not_null
+          - unique
+      - name: feat_env_cushion
+        tests:
+          - not_null
+      - name: feat_jra_cushion_val
+        tests:
+          - not_null

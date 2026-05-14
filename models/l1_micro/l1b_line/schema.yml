@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: int_wakuren_targets
+    description: "Calculate WAKUREN target variable for arbitrage routing"
+    columns:
+      - name: race_key
+        description: "Primary key 1"
+        tests:
+          - not_null
+      - name: umaban
+        description: "Primary key 2"
+        tests:
+          - not_null
+      - name: wakuban
+        description: "Calculated bracket number"
+        tests:
+          - not_null
+      - name: target_wakuren
+        description: "1 if the horse is part of the winning WAKUREN combination, else 0"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+
+  - name: int_pace_chaos_features
+    description: "Pace and Chaos feature extraction for the Sovereign pipeline"
+    columns:
+      - name: race_key
+        description: "Primary key 1"
+        tests:
+          - not_null
+      - name: umaban
+        description: "Primary key 2"
+        tests:
+          - not_null
+      - name: base_pace
+        description: "Base pace index"
+        tests:
+          - not_null
+      - name: feat_pace_advantage_score
+        description: "Calculated pace advantage score"
+        tests:
+          - not_null
+      - name: feat_tda_chaos_entropy
+        description: "Chaos entropy index (stubbed as 0 in DB)"
+        tests:
+          - not_null

@@ -1,0 +1,192 @@
+version: 2
+
+sources:
+  - name: public
+    database: pckeiba
+    schema: public
+    tables:
+      - name: ne当日順位
+        description: "Victgrab (NE) から提供される当日順位データ"
+      - name: sed_parsed
+        description: "SED (成績) パース済みデータ"
+        loaded_at_field: "ingested_at"
+        freshness:
+          warn_after: {count: 7, period: day}
+          error_after: {count: 14, period: day}
+      - name: kyi_parsed
+        description: "KYI (前日) パース済みデータ"
+        loaded_at_field: "ingested_at"
+        freshness:
+          warn_after: {count: 7, period: day}
+          error_after: {count: 14, period: day}
+      - name: a3_ext_opinions
+        description: "外部から無差別に収集された予想データ"
+      - name: a3_intelligence_audit
+        description: "推論と結果の照合（自己学習用）"
+      - name: a3_jra_cushion
+        description: "JRA 公式から発表されるクッション値データ"
+      - name: jvd_se
+        description: "過去のレース結果・成績データ"
+      - name: jvd_hc
+        description: "JRA 坂路調教データ"
+      - name: jvd_um
+        description: "JRA 馬マスタデータ"
+      - name: jvd_ra
+        description: "JRA レースマスタ"
+      - name: jvd_hr
+        description: "JRA 払戻マスタ"
+      - name: jvd_ks
+        description: "JRA 騎手マスタ"
+      - name: jvd_ch
+        description: "JRA 調教師マスタ"
+      - name: jvd_o1
+        description: "JRA 単複枠オッズ"
+      - name: jvd_o2
+        description: "JRA 馬連オッズ"
+      - name: jvd_o3
+        description: "JRA ワイドオッズ"
+      - name: jvd_o4
+        description: "JRA 馬単オッズ"
+      - name: jvd_o5
+        description: "JRA 3連複オッズ"
+      - name: jvd_o6
+        description: "JRA 3連単オッズ"
+      - name: int_a3_intelligence_hub
+        description: "Python 統計・因果レイヤーからの計算結果ハブ"
+      - name: sed
+        description: "JRDB SED (成績) 生データ"
+      - name: ne
+        description: "JRDB NE (成績拡張) 生データ"
+      - name: bac_parsed
+        description: "JRDB BAC (番組) パース済みデータ"
+      - name: kyi_parsed_v51
+        description: "KYI (前日) パース済みデータ v51"
+      - name: tyb_parsed
+        description: "TYB (直前) パース済みデータ"
+      - name: ukc_parsed_v50
+        description: "UKC (血統) パース済みデータ v50"
+      - name: v_h1_extracted
+        description: "H1 抽出データ"
+      - name: v_h1_raw
+        description: "H1 生データ"
+
+
+
+  - name: api
+    database: pckeiba
+    schema: api
+    tables:
+      - name: a3_features_today_base
+        description: "当日推論用特徴量スナップショット"
+      - name: a3_portfolios
+        description: "分析ポートフォリオ管理"
+      - name: a3_inference_logs
+        description: "推論ログ"
+      - name: a3_file_registry
+        description: "DB-First ファイルレジストリ"
+      - name: a3_sovereign_rules
+        description: "Sovereign ルール管理"
+      - name: a3_reform_tasks
+        description: "改革タスク管理"
+      - name: system_meta_learning_history
+        description: "メタ学習履歴"
+      - name: a3_h1_events
+        description: "H1 歴史的イベントデータ"
+      - name: a3_h1_raw_chunks
+        description: "H1 生テキストチャンク"
+      - name: a3_h1_context_features
+        description: "H1 コンテキスト特徴量"
+      - name: static_analysis_results
+        description: "静的解析結果"
+      - name: a3_payouts_v91
+        description: "WIN/WIDE配当マスタ (43,824行, 2023/01-2026/03)"
+      - name: a3_threshold_config
+        description: "馬券種別閾値設定"
+
+      - name: a3_payouts_v39
+        description: "WIN/WIDE配当マスタ旧版"
+      - name: v_inference_today
+        description: "本日推論用ベースビュー (legacy — Phase 410でdbt化完了)"
+      - name: a3_taketube_insights
+        description: "TakeTube動画分析インサイトデータ"
+
+
+
+  - name: api_mv
+    database: pckeiba
+    schema: api
+    tables:
+      - name: mv_unified_features_v55
+        description: "統合特徴量MATVIEW (学習用・Phase 371時点の最新)"
+
+  - name: a3_meta
+    database: pckeiba
+    schema: a3_meta
+    tables:
+      - name: a3_sub_tasks
+        description: "Bucket Relay タスク管理"
+
+  - name: chrono_archive
+    database: pckeiba
+    schema: chrono_archive
+    tables:
+      - name: extracted_events
+        description: "H1 抽出イベント"
+      - name: source_documents
+        description: "H1 ソースドキュメント"
+      - name: ndl_sources
+        description: "NDLソース管理"
+
+models:
+  - name: consistency_checks
+    description: "a3_consistency_check.pyの全ルールをdbt testとして移植"
+    columns: []
+    
+  - name: stg_sed_parsed
+    description: "成績(SED)データのStagingモデル。5馬券種の基礎ターゲット変数(target_win等)を生成する。"
+    columns:
+      - name: race_date
+        description: "レース日付"
+        tests:
+          - not_null
+      - name: race_key
+        description: "レースキー"
+        tests:
+          - not_null
+      - name: umaban
+        description: "馬番"
+        tests:
+          - not_null
+      - name: actual_rank
+        description: "確定着順"
+      - name: target_win
+        description: "単勝ターゲット (1着)"
+      - name: target_place
+        description: "複勝ターゲット (3着以内)"
+      - name: target_umatan
+        description: "馬単ターゲット (2着以内)"
+      - name: target_umaren
+        description: "馬連ターゲット (2着以内)"
+      - name: target_wide
+        description: "ワイドターゲット (3着以内)"
+
+tests:
+  # R-WL: Feature Whitelist (ターゲット変数がfeatures viewに混入していないか)
+  - name: test_no_target_leak_in_features
+    description: "R-WL: actual_rank, is_winner, is_top3 が features view に存在しないことを確認"
+
+  # R-SED: SED Isolation (学習データに事後情報が混入していないか)
+  - name: test_sed_isolation
+    description: "R-SED: 禁止されたSEDカラムがtraining poolに存在しないこと"
+
+  # R-CHAIN: View Chain Integrity
+  - name: test_training_pool_not_empty
+    description: "R-CHAIN: training pool が 10,000行以上あること"
+
+  # R-SOVEREIGN: No Kill
+  - name: test_no_exit_calls
+    description: "R-SOVEREIGN: exit()呼び出しがないこと (DB側は不要)"
+
+  # R-PAYOUT: Payout Table
+  - name: test_payouts_exist
+    description: "R-PAYOUT: 配当データが存在すること"

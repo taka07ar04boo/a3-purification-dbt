@@ -1,0 +1,15 @@
+# profiles.yml — Example configuration
+# Copy this file to ~/.dbt/profiles.yml and fill in your credentials
+
+a3_profile:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost       # or 'db' inside Docker
+      port: 5432
+      user: your_username
+      pass: your_password
+      dbname: your_database
+      schema: public
+      threads: 4
